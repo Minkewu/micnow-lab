@@ -24,7 +24,7 @@ python3 install.py --agent codex
 python3 install.py --agent codex --install
 ```
 
-`--agent` 可选 `codex`、`claude-code`、`cursor`、`gemini`、`qwen-code`、`kimi-cli`。默认安装到当前用户的技能目录；只想放进一个项目时，加 `--project "/你的项目路径"`。
+`--agent` 可选 `codex`、`claude-code`、`cursor`、`gemini`、`qwen-code`、`kimi-cli`、`deepseek-harness`。默认安装到当前用户的技能目录；只想放进一个项目时，加 `--project "/你的项目路径"`。
 
 WorkBuddy 当前使用已核实的项目目录：
 
@@ -53,14 +53,14 @@ AI 应实际启动服务、执行命令和回读结果。网页上修改设置�
 | 名称 | 当前提供的接入方式 | 验证边界 |
 | --- | --- | --- |
 | Codex | 标准 Skill + 安装器 | 真实 CLI 已完成发现、模型调用、读写与清理；本轮未操作可视网页 |
-| Claude Code | 标准 Skill + 安装器 | 实际 CLI 和技能文件已安装；当前无可用账号完成模型验收 |
-| WorkBuddy | 项目安装器或技能 ZIP | `5.9.3` 完成 0.5.0 模型与真实网页双向操作、模拟 Speak 和清理；诊断风险及新版指引复测另记 |
-| Cursor | 标准 Skill + 安装器 | 实际 CLI 和技能文件已安装；登录阻塞，尚未验证技能发现 |
-| Gemini CLI | 标准 Skill、安装器或原生 GitHub 安装 | 条件性发现已观察；正常信任流程及模型运行待验证 |
+| Claude Code | 标准 Skill + 安装器 | 0.5.1 安装及 19 文件校验通过；技能发现和模型运行未验收，当前无可用账号 |
+| WorkBuddy | 项目安装器或技能 ZIP | `5.9.3` 完成 0.5.0 完整功能测试；0.5.1 原生 ZIP 安装、最小生命周期与本次限定范围诊断通过，配置修改和 Speak 未重测 |
+| Cursor | 标准 Skill + 安装器 | 0.5.1 安装及 19 文件校验通过；当前无可用测试账号，技能发现和模型运行未验收 |
+| Gemini CLI | 标准 Skill、安装器或原生 GitHub 安装 | `0.68.0` 完成 0.5.1 安装、正常项目信任与技能发现；官方 Google 登录返回个人账号不再支持此客户端，模型运行未验收 |
 | 千问 | 千问工作助理原生 ZIP 上传；Qwen Code Skill / 扩展 | 工作助理 `5.2.0.298` 完成 0.5.1 功能与真实网页测试；另一次独立生命周期补测完成模型关闭、托管任务退出和文件清理，不合并为单次完整流程。Code 计划限制另记 |
 | Kimi | Kimi Work 原生 ZIP 上传；Kimi Code CLI Skill / 插件 | Work `3.2.27` 完成 0.5.1 模型/真实网页双向设置与模拟 Speak；外部工具清理通过，模型收尾未验收；CLI 发现通过 |
-| DeepSeek | 通过 Claude Code 等本地宿主加载 Skill | 模型接入与宿主安装分开；不自动配置 API 账户 |
-| Perplexity | Computer / Personal Computer 专用根目录 ZIP | 导入格式已核实；本机执行与服务生命周期待实测 |
+| DeepSeek | 官方 Harness + 安装器；Claude Code 替代路线未实测 | Harness `0.2.2-rc.1` 完成 0.5.1 真实模型与网页双向设置、模拟 Speak、模型关闭及独立清理核验；项目选择界面问题另记 |
+| Perplexity | Computer / Personal Computer 专用根目录 ZIP | `26.44.0`（build `163`）安装、登录、0.5.1 ZIP 上传及宿主界面发现通过；本次账号发送任务时提示升级，模型读取与运行未验收 |
 | 豆包 | 豆包工作个人自定义技能上传 | `2.35.12` 完成 0.5.0 文件夹导入、模型调用、真实网页双向修改、模拟 Speak 与清理 |
 
 详细步骤、官方来源及每个平台的运行限制见 **[Agent 安装与兼容说明](docs/agents.md)**，本轮版本和证据范围见 **[客户端实测记录](docs/client-validation.md)**。格式适配不等于已经在十个客户端逐一验收，也不表示获得官方市场认证。

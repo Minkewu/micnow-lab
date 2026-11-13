@@ -16,7 +16,8 @@ SKILL_NAME = "micnow-lab"
 SOURCE = Path(__file__).absolute().parent / "skills" / SKILL_NAME
 AGENT_FOLDERS = {"codex": ".agents", "cursor": ".agents", "gemini": ".agents",
                  "qwen-code": ".agents", "kimi-cli": ".agents",
-                 "claude-code": ".claude", "workbuddy": ".codebuddy"}
+                 "claude-code": ".claude", "workbuddy": ".codebuddy",
+                 "deepseek-harness": ".dsh"}
 RESOURCE_DIRS = {"agents", "assets", "references", "scripts"}
 SUFFIXES = {".md", ".py", ".yaml", ".yml", ".html", ".css", ".js", ".svg",
             ".png", ".jpg", ".jpeg", ".webp", ".woff2", ".txt"}
@@ -111,6 +112,11 @@ def resolve_destination(agent=None, project=None, scope=None, destination=None):
     elif scope == "user":
         if agent == "workbuddy":
             raise InstallError("WorkBuddy requires --project or an explicit --destination; no user path is assumed.")
+        if agent == "deepseek-harness":
+            # Official Harness override; project roots remain project/.dsh.
+            dsh_home = os.environ.get("DSH_HOME")
+            if dsh_home:
+                return checked_path(Path(dsh_home) / "skills")
         base = checked_path(Path.home())
     else:
         raise InstallError("Scope must be user or project.")

@@ -56,7 +56,7 @@ python3 install.py --agent claude-code --install
 
 安装到 `~/.claude/skills/micnow-lab/`；添加 `--project "/path/to/project"` 可安装到项目 `.claude/skills/`。使用 `/micnow-lab` 或直接描述任务。
 
-标准技能格式可直接复用。Claude Code 的执行隔离可能影响本地通信：macOS 上本地监听可能受限；Linux／WSL2 沙箱中的 localhost 可能属于单条命令的私有网络。受限时按客户端的正常授权流程处理，不自动关闭安全设置或改为公网监听。客户端端到端运行仍需实测。
+标准技能格式可直接复用。Claude Code 的执行隔离可能影响本地通信：macOS 上本地监听可能受限；Linux／WSL2 沙箱中的 localhost 可能属于单条命令的私有网络。受限时按客户端的正常授权流程处理，不自动关闭安全设置或改为公网监听。本轮在独立测试项目中通过安装器的正常更新流程备份旧版、安装 0.5.1，19 个文件与发布源一致；客户端技能发现和模型运行尚未验收，当前无可用账号继续测试。
 
 官方来源：[技能目录](https://code.claude.com/docs/en/skills#choose-where-skills-load)、[本地服务访问限制](https://code.claude.com/docs/en/sandboxing#a-command-fails-to-reach-a-server-on-localhost)。
 
@@ -73,7 +73,9 @@ python3 install.py --agent workbuddy --project "/path/to/project" --install
 
 位置为项目 `.codebuddy/skills/micnow-lab/`。安装器不猜测 WorkBuddy 用户级目录。官方文档中的对话安装适用于技能市场，不应把粘贴任意 GitHub URL 描述为已确认入口。
 
-WorkBuddy 支持脚本执行，仍可能要求工作区信任或命令授权。本轮 `5.9.3` 使用 0.5.0 技能及 Python `3.13.12` 完成模型操作、真实浏览器双向设置、模拟 Speak 与退出清理。运行中的诊断范围风险及 0.5.1 指引补强单独记录在 [客户端实测记录](client-validation.md)；新规则尚需行为复测。这里是自行导入，不代表 WorkBuddy 市场审核通过。
+WorkBuddy 支持脚本执行，仍可能要求工作区信任或命令授权。本轮 `5.9.3` 使用 0.5.0 技能及 Python `3.13.12` 完成模型操作、真实浏览器双向设置、模拟 Speak 与退出清理。该次诊断范围风险及 0.5.1 指引补强、后续限定范围补测单独记录在 [客户端实测记录](client-validation.md)。这里是自行导入，不代表 WorkBuddy 市场审核通过。
+
+随后通过客户端原生上传入口导入公开的 0.5.1 标准 ZIP，安装后的 19 个技能文件与发布源逐项一致。新版以 Hy4 模型、Python `3.13.12` 和 PTY 完成独立最小生命周期：启动、只读查询默认状态、观察真实嵌入网页，再由模型调用随包 `shutdown`；服务、模拟器、端口、连接文件及运行目录清理另经独立检查确认。本次诊断限定在已知进程、端口和文件存在性，未放宽宿主权限。该结果只覆盖这次最小生命周期与限定范围诊断，不包含新版配置修改或 Speak 重测，也不替代其他模型行为验收。
 
 官方来源：[技能上传](https://www.codebuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Skills-Market)、[项目目录](https://www.codebuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Project)、[执行权限](https://www.codebuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Permission-Modes)。
 
@@ -86,7 +88,7 @@ python3 install.py --agent cursor --install
 
 使用 `~/.agents/skills/micnow-lab/`；加 `--project "/path/to/project"` 改为项目 `.agents/skills/`。Cursor 也支持 `.cursor/skills/`。在本机 Agent 中通过 `/` 查找技能或直接提出任务。
 
-官方确认支持随技能执行 Python 等脚本，但实际命令权限由客户端决定。此安装路径不自动同步到 Cloud Agents；云端运行也不等于本机运行。目录兼容已核对，客户端端到端运行待实测。
+官方确认支持随技能执行 Python 等脚本，但实际命令权限由客户端决定。此安装路径不自动同步到 Cloud Agents；云端运行也不等于本机运行。本轮 0.5.1 的 19 个安装文件与发布源一致；当前没有可用测试账号，客户端未登录，技能发现和端到端运行尚未验收。
 
 官方来源：[Cursor Agent Skills](https://cursor.com/docs/skills)。
 
@@ -105,7 +107,9 @@ python3 install.py --agent gemini --install
 gemini skills install https://github.com/Minkewu/micnow-lab.git --path skills/micnow-lab
 ```
 
-先在目标项目交互启动 Gemini，审阅项目内容并按界面选择信任该项目；0.68.0 的信任管理入口为 `/permissions trust`。通过 `/skills list` 检查发现情况；新安装后可 `/skills reload`。未受信任的项目会跳过项目技能。不要把全局跳过信任检查作为安装步骤。技能激活及命令执行遵守 Gemini CLI 的确认流程，容器或隔离网络可能影响本机端口。本轮只观察到临时信任条件下的技能发现，正常信任流程及模型运行待实测。
+先在目标项目交互启动 Gemini，审阅项目内容并按界面选择信任该项目；0.68.0 的信任管理入口为 `/permissions trust`。通过 `/skills list` 检查发现情况；新安装后可 `/skills reload`。未受信任的项目会跳过项目技能。不要把全局跳过信任检查作为安装步骤。技能激活及命令执行遵守 Gemini CLI 的确认流程，容器或隔离网络可能影响本机端口。
+
+本轮 `0.68.0` 在独立项目安装 0.5.1，19 个文件与发布源一致；通过正常交互选择 **Trust folder** 后，客户端重启并持久保存当前项目的信任，原生技能列表显示 `micnow-lab [Enabled]`，未使用信任绕过选项。随后选择官方 Google 登录，服务返回此客户端已不再支持 Gemini Code Assist 个人账号、提示迁移至 Antigravity。该次没有模型或工具调用，实验室未启动；模型运行仍未验收。本轮验证的是项目安装器路径，未验证原生 GitHub URL 安装。
 
 官方来源：[技能安装](https://geminicli.com/docs/cli/skills/)、[发现与工作区信任](https://geminicli.com/docs/cli/tutorials/skills-getting-started/)、[执行环境](https://geminicli.com/docs/cli/sandbox/)。
 
@@ -159,20 +163,33 @@ qwen extensions install https://github.com/Minkewu/micnow-lab
 
 官方来源：[技能目录](https://qwenlm.github.io/qwen-code-docs/en/users/features/skills/)、[扩展清单与安装](https://qwenlm.github.io/qwen-code-docs/en/users/extension/introduction/)、[后台执行](https://qwenlm.github.io/qwen-code-docs/en/developers/tools/shell/)、[账户与模型认证](https://qwenlm.github.io/qwen-code-docs/en/users/configuration/auth/)。
 
-## 8. DeepSeek
+## 8. DeepSeek：官方 Harness 与其他宿主
 
-这里的可实现路线是 **DeepSeek 模型 + 已支持的本地 Agent 宿主**。例如，已经按 DeepSeek 官方指南配置好的 Claude Code，可安装同一份技能：
+优先使用 [DeepSeek 官方 Harness](https://www.deepseek.com/en/harness/)。安装 Harness 后，通过仓库安装器放入同一份标准 Skill：
+
+```sh
+python3 install.py --agent deepseek-harness
+python3 install.py --agent deepseek-harness --install
+```
+
+用户级技能默认安装到 `~/.dsh/skills/micnow-lab/`；如果已经设置 `DSH_HOME`，安装器使用该目录下的 `skills/micnow-lab/`。项目级安装加 `--project "/path/to/project"`，使用项目 `.dsh/skills/micnow-lab/`，不受 `DSH_HOME` 影响。Harness 将最近的 `.git` 所在目录作为项目根；请在目标项目根安装并启动。目录依据见 [官方技能发现说明](https://deepseek-harness.github.io/deepseek-harness/en/reference/subsystems/skills.md) 与 [配置目录](https://deepseek-harness.github.io/deepseek-harness/en/reference/config-catalog.md)。
+
+本轮官方 npm 客户端 `0.2.2-rc.1` 使用 Node.js `24.22.3` 在独立目录安装，0.5.1 的 19 个技能文件与发布源一致。正常账号登录后，在 Web profile 中使用 DeepSeek-V4.1-Flash、High 推理设置；真实模型通过 `load_skill` 读取技能，以 Python `3.9.6` 的进程管道回退启动并保留后台任务。模型与真实浏览器在同一设备会话中完成双向配置、偏好保留、模拟 Speak 和随包 `shutdown`，关闭与清理另经独立核验，完整本机功能流程通过。
+
+该预览版本的 Web 原生目录选择按钮在本轮没有响应，测试改用官方 `workspace/create` 接口注册独立项目，再继续正常 Web 界面操作；不将此记录为纯界面一键完成项目注册。首次定位已知服务的子进程时，经正常单次授权批准限定范围的进程查询；保留默认 `workspace-write` 安全设置。具体步骤与边界见 [客户端实测记录](client-validation.md)。
+
+另保留 **DeepSeek 模型 + Claude Code 等本地宿主** 的替代路线。已按 DeepSeek 官方指南配置好 Claude Code 时，可安装同一份技能：
 
 ```sh
 python3 install.py --agent claude-code
 python3 install.py --agent claude-code --install
 ```
 
-随后在该 Claude Code 会话调用 `/micnow-lab`。目录与执行权限由 Claude Code 决定；安装器不切换模型、不设置 API 密钥，也不创建虚构的 DeepSeek 技能目录。已有其他宿主时，按该宿主的技能安装文档操作。
+随后在该 Claude Code 会话调用 `/micnow-lab`。该路线的目录与执行权限由 Claude Code 决定；安装器不切换模型、不设置 API 密钥。已有其他宿主时，按该宿主的技能安装文档操作。
 
-DeepSeek 官方明确：模型返回工具调用，具体函数由调用方执行。因此不能把“DeepSeek 支持 Tool Calls”当作 DeepSeek 网页聊天已支持本机脚本。该组合尚需独立端到端实测。
+DeepSeek 官方明确：模型返回工具调用，具体函数由调用方执行。因此不能把“DeepSeek 支持 Tool Calls”当作 DeepSeek 网页聊天已支持本机脚本。本轮通过的是上述 Harness Web profile 的本机流程；DeepSeek 模型接入 Claude Code 的替代路线仍未实测。
 
-官方来源：[DeepSeek 接入 Claude Code](https://api-docs.deepseek.com/quick_start/agent_integrations/claude_code/)、[Tool Calls 执行责任](https://api-docs.deepseek.com/guides/tool_calls/)。
+官方来源：[Harness 代码仓库](https://github.com/deepseek-ai/deepseek-harness)、[DeepSeek 接入 Claude Code](https://api-docs.deepseek.com/quick_start/agent_integrations/claude_code/)、[Tool Calls 执行责任](https://api-docs.deepseek.com/guides/tool_calls/)。
 
 ## 9. Kimi：Kimi Work 与 Kimi Code CLI
 
@@ -211,13 +228,17 @@ Kimi Work 与上述隔离 CLI 的模型配置分别记录，不能由 CLI 未配
 
 目标是 **Perplexity Computer / Personal Computer**，不是普通搜索聊天。请下载 [下载目录](https://github.com/Minkewu/micnow-lab/tree/main/downloads) 中的 `micnow-lab-perplexity-0.5.1.zip`。
 
-1. 打开 Plugins → Add custom → Upload plugin or skill。
-2. 选择 `micnow-lab-perplexity-0.5.1.zip`。尚未显示 Plugins 的界面使用 Customize → Skills → Create skill → Upload skill。
-3. 确认名称与说明，并检查当前任务是否有可用的本机执行环境。
+1. 在本轮实测的 macOS 客户端进入 **Computer 模式 → 输入框更多选项 → 浏览插件 → 添加自定义项 → 技能 → 上传技能**。
+2. 选择 `micnow-lab-perplexity-0.5.1.zip`，等待上传成功；在已安装技能列表确认 `micnow-lab` 已开启。
+3. 打开详情检查完整资源树，点击“使用技能”，再填写实际任务。模型执行仍取决于当前账号计划和任务的本机执行环境。
 
 这个专用 ZIP 将 `SKILL.md` 放在 ZIP 根，保留 `scripts/`、`references/` 和 `assets/`；不要用仅有文字的 `.md` 替代完整包。官方单技能限额为 20 MB、100 文件。本仓库当前不提供 Perplexity 的 GitHub 插件导入入口，因为这需要另外的插件清单。
 
 网页 Computer 运行在云端；Personal Computer 才涉及本机文件与应用。本机服务、持续进程和 localhost 仍需实测；仅上传成功不能保证实验室能在用户浏览器打开。不猜测 Perplexity 的内部技能目录。
+
+本轮 macOS 官方 `26.44.0`（build `163`）通过 Finder 正常安装并登录，安装件与 DMG 文件一致，严格签名及公证检查通过。公开下载的 0.5.1 专用 ZIP 上传成功，已安装技能列表显示 `micnow-lab` 已启用；详情文件树展示 19 个资源及新版诊断规则。上传前 ZIP 哈希与完整资源树已核验，但未逐字节回读客户端存储，因此只记为安装、上传及宿主界面发现通过。
+
+点击“使用技能”后填写本机任务，发送时本次账号出现 **Upgrade to Pro** 提示，任务仍停留在输入框，没有模型读取或实验室启动，也未购买升级。该限制只描述本轮账号和入口，不推断所有 Perplexity 用户的计划要求；模型运行仍待验收。
 
 官方来源：[技能 ZIP 格式与导入](https://www.perplexity.ai/help-center/en/articles/13914413-how-to-use-computer-skills)、[本机与云端区别](https://www.perplexity.ai/help-center/en/articles/14659663-what-is-personal-computer)。
 

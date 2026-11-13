@@ -1,5 +1,8 @@
 """Installer tests write only to temporary fixture directories, never real skills."""
 import importlib.util
+import contextlib
+import io
+import json
 from pathlib import Path
 import tempfile
 import unittest
@@ -41,6 +44,35 @@ class InstallTest(unittest.TestCase):
         self.assertTrue(result["verified"])
         self.assertEqual(installer.inventory(self.parent / "micnow-lab"), installer.inventory(bundled))
         self.assertEqual(result["status"], "installed")
+
+    def test_deepseek_harness_cli_preview_install_and_repeat(self):
+        project = self.root / "deepseek-project"
+        project.mkdir()
+        target = project / ".dsh" / "skills" / "micnow-lab"
+        other = project / ".dsh" / "skills" / "other-skill" / "SKILL.md"
+        other.parent.mkdir(parents=True)
+        other.write_text("keep this skill", encoding="utf-8")
+        args = ["--agent", "deepseek-harness", "--project", str(project)]
+
+        def invoke(extra=()):
+            output = io.StringIO()
+            with contextlib.redirect_stdout(output):
+                self.assertEqual(installer.main(args + list(extra)), 0)
+            return json.loads(output.getvalue())
+
+        preview = invoke()
+        self.assertEqual(preview["status"], "preview")
+        self.assertEqual(preview["destination"], str(target))
+        self.assertFalse(target.exists())
+        result = invoke(["--install"])
+        self.assertEqual(result["status"], "installed")
+        self.assertTrue(result["verified"])
+        self.assertEqual(installer.inventory(target), installer.inventory(installer.SOURCE))
+        again = invoke(["--install"])
+        self.assertEqual(again["status"], "already-installed")
+        self.assertFalse(again["changed"])
+        self.assertEqual(other.read_text(), "keep this skill")
+        self.assertFalse((project / ".agents").exists())
 
     def test_install_is_verified_idempotent_and_preserves_other_skills(self):
         other = self.parent / "other-skill" / "SKILL.md"
@@ -146,15 +178,43 @@ class InstallTest(unittest.TestCase):
         project.mkdir()
         fake_home = self.root / "home"
         fake_home.mkdir()
-        with mock.patch.object(installer.Path, "home", return_value=fake_home):
+        with mock.patch.object(installer.Path, "home", return_value=fake_home), \
+                mock.patch.dict(installer.os.environ, {"DSH_HOME": ""}):
             for agent in ("codex", "cursor", "gemini", "qwen-code", "kimi-cli"):
                 self.assertEqual(installer.resolve_destination(agent), fake_home / ".agents" / "skills")
                 self.assertEqual(installer.resolve_destination(agent, project), project / ".agents" / "skills")
             self.assertEqual(installer.resolve_destination("claude-code"), fake_home / ".claude" / "skills")
             self.assertEqual(installer.resolve_destination("claude-code", project), project / ".claude" / "skills")
+            self.assertEqual(installer.resolve_destination("deepseek-harness"), fake_home / ".dsh" / "skills")
+            self.assertEqual(installer.resolve_destination("deepseek-harness", project), project / ".dsh" / "skills")
             self.assertEqual(installer.resolve_destination("workbuddy", project), project / ".codebuddy" / "skills")
             with self.assertRaises(installer.InstallError):
                 installer.resolve_destination("workbuddy")
+
+    def test_deepseek_harness_custom_home_installs_without_using_real_home(self):
+        custom_home = self.root / "custom-dsh-home"
+        project = self.root / "project"
+        project.mkdir()
+        with mock.patch.dict(installer.os.environ, {"DSH_HOME": str(custom_home)}), \
+                mock.patch.object(installer.Path, "home", side_effect=AssertionError("Must not consult user home")):
+            parent = installer.resolve_destination("deepseek-harness")
+            self.assertEqual(parent, custom_home / "skills")
+            self.assertEqual(installer.resolve_destination("deepseek-harness", project), project / ".dsh" / "skills")
+            result = installer.install(installer.SOURCE, parent, apply=True)
+            self.assertTrue(result["verified"])
+            self.assertEqual(installer.inventory(parent / "micnow-lab"), installer.inventory(installer.SOURCE))
+
+    def test_deepseek_harness_custom_home_rejects_symlinks_and_traversal(self):
+        target = self.root / "keep"
+        target.mkdir()
+        linked = self.root / "linked-dsh-home"
+        linked.symlink_to(target, target_is_directory=True)
+        for value in (str(linked), str(self.root / "a" / ".." / "dsh")):
+            with self.subTest(home=value), \
+                    mock.patch.dict(installer.os.environ, {"DSH_HOME": value}), \
+                    self.assertRaises(installer.InstallError):
+                installer.resolve_destination("deepseek-harness")
+        self.assertEqual(list(target.iterdir()), [])
 
     def test_explicit_destination_supports_unknown_agent_without_guessing(self):
         explicit = self.root / "custom" / "skills"
