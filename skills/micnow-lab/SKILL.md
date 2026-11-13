@@ -2,7 +2,7 @@
 name: micnow-lab
 description: Open the local MicNow device lab without hardware. Send actual tool commands through a local bridge to a simulated device, verify its replies, and keep AI and Web on the same session. Supports configuration, simulated Speak and fault recovery; no real microphone, device or external-app control.
 metadata:
-  version: "0.5.0"
+  version: "0.5.1"
 ---
 
 # MicNow 设备实验室
@@ -82,6 +82,12 @@ python3 "SKILL_DIR/scripts/device_client.py" --connection "CONNECTION_FILE" comm
 ```text
 python3 "SKILL_DIR/scripts/device_client.py" --connection "CONNECTION_FILE" shutdown
 ```
+
+## 诊断与清理检查
+
+- 只检查本次启动已知的服务 PID、子进程 PID、端口和路径。缺少标识时查本次启动回执，不扫描全机进程、其他聊天目录或无关应用配置。
+- POSIX 进程检查可用 `ps -p PID,CHILD_PID -o pid=,ppid=,comm=`，没有子进程 PID 时省略它。不要为诊断运行 `env`、`printenv`、`ps e`、`ps auxe`，或输出环境、全部进程和完整命令行。
+- 连接文件内容仅由随包客户端内部加载；诊断只检查 `Path(CONNECTION_FILE).exists()` 的布尔结果。日志只记录必要的非敏感状态，不输出环境变量、密钥、凭据或含秘密的原始日志。
 
 ## 边界与资料
 

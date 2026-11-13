@@ -1,6 +1,6 @@
 # 在不同 Agent 中安装 MicNow Lab
 
-文档核对日期：2026-11-13。版本：0.5.0。
+文档核对日期：2026-11-13。当前版本：0.5.1。
 
 仓库地址：<https://github.com/Minkewu/micnow-lab>。
 
@@ -62,7 +62,7 @@ python3 install.py --agent claude-code --install
 
 ## 3. WorkBuddy
 
-推荐从 [下载目录](https://github.com/Minkewu/micnow-lab/tree/main/downloads) 下载 `micnow-lab-0.5.0.zip`，在 WorkBuddy 打开“专家·技能·连接器 → 技能 → 添加技能 → 上传技能”，选择 ZIP。
+推荐从 [下载目录](https://github.com/Minkewu/micnow-lab/tree/main/downloads) 下载 `micnow-lab-0.5.1.zip`，在 WorkBuddy 打开“专家·技能·连接器 → 技能 → 添加技能 → 上传技能”，选择 ZIP。
 
 也可安装到一个已存在的项目：
 
@@ -73,7 +73,7 @@ python3 install.py --agent workbuddy --project "/path/to/project" --install
 
 位置为项目 `.codebuddy/skills/micnow-lab/`。安装器不猜测 WorkBuddy 用户级目录。官方文档中的对话安装适用于技能市场，不应把粘贴任意 GitHub URL 描述为已确认入口。
 
-WorkBuddy 支持脚本执行，仍可能要求工作区信任或命令授权；Python、后台服务持续性和浏览器通信需要实际检查。这里是自行导入，不代表 WorkBuddy 市场审核通过。
+WorkBuddy 支持脚本执行，仍可能要求工作区信任或命令授权。本轮 `5.9.3` 使用 0.5.0 技能及 Python `3.13.12` 完成模型操作、真实浏览器双向设置、模拟 Speak 与退出清理。运行中的诊断范围风险及 0.5.1 指引补强单独记录在 [客户端实测记录](client-validation.md)；新规则尚需行为复测。这里是自行导入，不代表 WorkBuddy 市场审核通过。
 
 官方来源：[技能上传](https://www.codebuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Skills-Market)、[项目目录](https://www.codebuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Project)、[执行权限](https://www.codebuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Permission-Modes)。
 
@@ -115,18 +115,28 @@ gemini skills install https://github.com/Minkewu/micnow-lab.git --path skills/mi
 
 1. 下载并解压标准技能 ZIP，保留整个 `micnow-lab/` 文件夹。
 2. 在客户端进入“插件·技能·伙伴 → 技能 → + 添加 → 上传技能”。
-3. 选择包含 `SKILL.md` 的完整文件夹，保留脚本、参考资料和图片；不要只上传说明文件。
-4. 在新工作任务中输入 `/` 或 `@`，查找并选中技能，完成文末的运行验收。
+3. 选择包含 `SKILL.md` 的完整 `micnow-lab/` 文件夹，保留全部 19 个文件；导入后开启技能，不要只上传说明文件。
+4. 在工作任务中选用该技能，请模型打开 MicNow 实验室、执行修改并回读。浏览器修改后，再请同一任务中的模型读取新设置；结束时执行 `shutdown`。
 
-官方个人上传说明支持文件或文件夹；本轮尚未实际完成客户端导入，故不承诺个人入口支持哪一种 ZIP 层级，也不猜测固定技能目录或 GitHub 直接安装命令。Python、本机后台服务和浏览器访问能力仍需实测。普通豆包网页聊天不能据此认定可以控制本机实验室。
+本轮在 macOS 豆包工作 `2.35.12` 使用 0.5.0 技能实际完成个人文件夹上传、开启与模型调用。模型使用 Python `3.14.7` 和本机 PTY 启动实验室；真实浏览器与模型在同一设备会话中交替修改设置、回读一致，模拟 Speak 与退出清理均通过。安装的 19 个文件与当时发布源一致，详见 [客户端实测记录](client-validation.md)。
+
+官方个人上传说明支持文件或文件夹；本轮验证的是完整文件夹，不承诺个人入口支持哪一种 ZIP 层级，也不猜测固定技能目录或 GitHub 直接安装命令。结果限于上述本机客户端，不能推广到普通豆包网页聊天或其他系统。
 
 开放平台的企业专属或公开上架属于另外的审核流程，本次 GitHub 安装不需要代替用户提交该流程。该开放平台要求根目录 `SKILL.md` 的 ZIP，与本节的个人文件夹上传应分开处理。
 
-官方来源：[豆包工作使用技能](https://www.doubao.com/work/docs/zh-cn/articles/081010973544-skills)、[开发者技能接入指南](https://open.doubao.com/document/doubao-developer-guide/skill-integration-guide)。本轮已在浏览器读到两篇正文。
+官方来源：[豆包工作使用技能](https://www.doubao.com/work/docs/zh-cn/articles/081010973544-skills)、[开发者技能接入指南](https://open.doubao.com/document/doubao-developer-guide/skill-integration-guide)。
 
-## 7. 千问：Qwen Code
+## 7. 千问：本地工作助理与 Qwen Code
 
-这里适配 **Qwen Code** 的本机执行能力，不能等同于千问网页聊天。目录安装：
+国内千问本机应用使用原生入口安装：
+
+1. 进入“本地工作助理 → 技能 → 新建 → 上传 ZIP”。
+2. 选择标准 `micnow-lab-0.5.1.zip`，等待客户端校验完成并开启技能。
+3. 在本地工作任务中请求模型读取技能、打开 MicNow 实验室，按宿主正常权限流程允许本机运行。
+
+本轮千问工作助理 `5.2.0.298` 的上传校验、开启、模型发现和读取均已通过，导入的 19 个文件与 0.5.1 包一致。模型使用 Python `3.9.6` 启动实验室，首次本机通信受限后经正常授权恢复，实际使用进程管道回退；模型与真实网页双向设置、保留其他配置及模拟 Speak 均通过。末轮桌面锁屏中断了观察和授权，随后由外部工具向本次已知服务发送正常终止信号，独立确认服务和模拟器退出、端口关闭；模型自行关闭尚未验收，连接文件删除未取得独立证据。这是本次测试的受限范围，不能据此判断平台不支持关闭。这个原生应用入口不使用下面的 Qwen Code 登录流程，也不能推广到普通网页聊天。
+
+另提供 **Qwen Code** 本地 CLI 的目录安装：
 
 ```sh
 python3 install.py --agent qwen-code
@@ -143,7 +153,9 @@ qwen extensions install https://github.com/Minkewu/micnow-lab
 
 扩展安装后的技能名称带前缀，可在 `/skills` 查看并使用 `/micnow-lab:micnow-lab`。Qwen Code 的 Shell 工具支持受管理后台进程；Agent 应保持实验室服务运行，并在结束时清理。容器或关闭的网络模式仍可能隔离 localhost。本轮项目发现及本地路径扩展安装已实测；GitHub／ZIP 原生安装入口和模型运行尚未实测。
 
-官方来源：[技能目录](https://qwenlm.github.io/qwen-code-docs/en/users/features/skills/)、[扩展清单与安装](https://qwenlm.github.io/qwen-code-docs/en/users/extension/introduction/)、[后台执行](https://qwenlm.github.io/qwen-code-docs/en/developers/tools/shell/)。
+拥有千问聊天账号不等于已具备 Qwen Code 可用模型。在交互客户端的 `/auth` 中选择适合已有账户的认证方式；当前 “Qwen Account with Subscription” 入口需要 `chat.qwen.ai` 的有效 Plus 或 Pro 订阅。安装 Skill 不会创建订阅或配置 API 密钥。
+
+官方来源：[技能目录](https://qwenlm.github.io/qwen-code-docs/en/users/features/skills/)、[扩展清单与安装](https://qwenlm.github.io/qwen-code-docs/en/users/extension/introduction/)、[后台执行](https://qwenlm.github.io/qwen-code-docs/en/developers/tools/shell/)、[账户与模型认证](https://qwenlm.github.io/qwen-code-docs/en/users/configuration/auth/)。
 
 ## 8. DeepSeek
 
@@ -160,9 +172,17 @@ DeepSeek 官方明确：模型返回工具调用，具体函数由调用方执�
 
 官方来源：[DeepSeek 接入 Claude Code](https://api-docs.deepseek.com/quick_start/agent_integrations/claude_code/)、[Tool Calls 执行责任](https://api-docs.deepseek.com/guides/tool_calls/)。
 
-## 9. Kimi：Kimi Code CLI
+## 9. Kimi：Kimi Work 与 Kimi Code CLI
 
-目标是新版 **Kimi Code CLI**；普通 Kimi 网页聊天的技能入口是另一套运行环境。
+Kimi Work 本机应用使用原生入口安装：
+
+1. 登录本机 Kimi Work，从个人技能上传入口选择标准 `micnow-lab-0.5.1.zip`。
+2. 导入后在工作任务中选用技能，请模型打开 MicNow 实验室。
+3. 在同一任务中核验网页修改；结束时让模型执行随包 `shutdown`。
+
+本轮 Kimi Work `3.2.27`（build `3.2.27.25`）已通过上传、发现和真实模型读取；导入的 19 个文件与 0.5.1 包一致。模型与真实网页的双向设置、其他配置保留及模拟 Speak 均通过。两次模型关闭请求均受服务高峰阻断，随后由外部工具调用同一随包客户端完成关闭，进程、端口及连接文件清理经独立核验通过；模型自行收尾尚未验收。这个原生应用入口不需要另外登录 Kimi Code CLI。
+
+另提供新版 **Kimi Code CLI** 的目录安装；普通 Kimi 网页聊天也是另一套运行环境：
 
 ```sh
 python3 install.py --agent kimi-cli
@@ -183,12 +203,14 @@ python3 install.py --agent kimi-cli --install
 
 官方来源：[技能目录](https://www.kimi.com/code/docs/en/kimi-code-cli/customization/skills.html)、[插件安装](https://www.kimi.com/code/docs/en/kimi-code-cli/customization/plugins.html)、[工具与后台任务](https://www.kimi.com/code/docs/en/kimi-code-cli/reference/tools.html)、[版本迁移](https://www.kimi.com/code/docs/en/kimi-code-cli/guides/migration.html)。
 
+Kimi Work 与上述隔离 CLI 的模型配置分别记录，不能由 CLI 未配置模型推断 Kimi Work 不可用。
+
 ## 10. Perplexity
 
-目标是 **Perplexity Computer / Personal Computer**，不是普通搜索聊天。请下载 [下载目录](https://github.com/Minkewu/micnow-lab/tree/main/downloads) 中的 `micnow-lab-perplexity-0.5.0.zip`。
+目标是 **Perplexity Computer / Personal Computer**，不是普通搜索聊天。请下载 [下载目录](https://github.com/Minkewu/micnow-lab/tree/main/downloads) 中的 `micnow-lab-perplexity-0.5.1.zip`。
 
 1. 打开 Plugins → Add custom → Upload plugin or skill。
-2. 选择 `micnow-lab-perplexity-0.5.0.zip`。尚未显示 Plugins 的界面使用 Customize → Skills → Create skill → Upload skill。
+2. 选择 `micnow-lab-perplexity-0.5.1.zip`。尚未显示 Plugins 的界面使用 Customize → Skills → Create skill → Upload skill。
 3. 确认名称与说明，并检查当前任务是否有可用的本机执行环境。
 
 这个专用 ZIP 将 `SKILL.md` 放在 ZIP 根，保留 `scripts/`、`references/` 和 `assets/`；不要用仅有文字的 `.md` 替代完整包。官方单技能限额为 20 MB、100 文件。本仓库当前不提供 Perplexity 的 GitHub 插件导入入口，因为这需要另外的插件清单。
@@ -207,4 +229,4 @@ python3 install.py --agent kimi-cli --install
 4. 用户明确要求时，执行一项模拟设置并回读核验；模拟 Speak 后确认状态已结束。
 5. 结束体验时关闭服务，确认服务及其子进程退出；不把凭证内容粘贴进聊天。
 
-记录客户端版本、系统版本、Python 版本、安装方式和失败位置。只有技能被识别时，应写“安装已验证”；完成以上步骤才写“本机运行已验证”。异常时保留错误事实，不通过新会话、改公网监听或放宽安全设置掩盖失败。
+记录客户端版本、系统版本、Python 版本、安装方式和失败位置。仅列出技能、尚未实际执行时，应写“发现已验证”；完成以上步骤才写“本机运行已验证”。异常时保留错误事实，不通过新会话、改公网监听或放宽安全设置掩盖失败。

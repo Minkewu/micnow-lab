@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from install import inventory
 
-VERSION = "0.5.0"
+VERSION = "0.5.1"
 
 
 def main():
