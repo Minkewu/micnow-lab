@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f3f2e9">
+  <title>MicNow · 设备与 AI</title>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <svg class="symbol-library" aria-hidden="true"><defs>
+    <symbol id="i-device" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="4"/><circle cx="12" cy="14" r="3"/><path d="M9 7h.01M12 7h.01M15 7h.01"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 2.6 6.4L21 12l-6.4 2.6L12 21l-2.6-6.4L3 12l6.4-2.6L12 3ZM19 2v4M17 4h4"/></symbol>
+    <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 10a9 9 0 1 1 1 7M3 4v6h6M12 7v5l3 2"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="13" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3M8 22h8"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h3"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/></symbol>
+  </defs></svg>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#device" aria-label="MicNow 设备首页"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span><strong>MicNow</strong><small>by wunderkammer</small></span></a>
+      <div class="sidebar-label">你的声音入口</div>
+      <nav class="navigation" aria-label="主要页面">
+        <button data-view="device" aria-current="page"><svg><use href="#i-device"/></svg>设备<span class="nav-dot" aria-hidden="true"></span></button>
+        <button data-view="ai"><svg><use href="#i-spark"/></svg>连接 AI</button>
+        <button data-view="history"><svg><use href="#i-history"/></svg>设置记录<span id="history-count" class="count">0</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="local-note"><span class="tiny-dot"></span><strong>本地模拟体验</strong><p>还没有硬件，也能先试一遍。</p></div>
+        <a class="muted-link" href="/docs/protocol.md" target="_blank" rel="noopener">查看模拟协议说明 <span>↗</span></a>
+        <span class="version">MicNow Lab · 0.5.0</span>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar"><div><p class="eyebrow" id="page-eyebrow">设置与使用</p><h1 id="page-title">我的 MicNow</h1></div><div class="header-status"><span class="simulation-badge">模拟设备</span><span class="connection-pill" id="connection-pill"><i></i><span>正在连接本地服务</span></span></div></header>
+      <main id="main">
+        <div class="error-banner" id="error-banner" role="alert" hidden><svg><use href="#i-info"/></svg><span id="error-message"></span><button id="retry-connection">重试</button><button id="dismiss-error" aria-label="关闭提示">×</button></div>
+
+        <section class="view" id="view-device" aria-label="我的 MicNow">
+          <section class="hero">
+            <div class="hero-copy"><div class="hero-kicker"><span></span>从连接，到开始表达</div><h2>一句话，<br>准备好开始说话。</h2><p>设置交给 AI，习惯留给你。<br>也可以继续用熟悉的 Web 页面，自己调整。</p><div class="hero-actions"><button class="button lime" data-open-ai><svg><use href="#i-spark"/></svg>交给 AI 设置<svg><use href="#i-arrow"/></svg></button><button class="hero-link" id="open-manual">我自己设置 <span>↗</span></button></div></div>
+            <div class="hero-visual"><img src="/device-hero.png" alt="MicNow 麦克风侧面，长条按键为 Speak"><span class="speak-label"><i></i><span>Speak<small>你的语音主键</small></span></span><span class="hero-caption">设备外观参考 · 状态为本地模拟</span></div>
+          </section>
+
+          <section class="journey" aria-label="准备进度">
+            <div class="journey-step" id="step-device"><span class="step-number">01</span><div><strong>正在读取设备</strong><small>等待本地服务回应</small></div></div>
+            <span class="journey-line" aria-hidden="true"></span>
+            <div class="journey-step" id="step-config"><span class="step-number">02</span><div><strong>沿用你的习惯</strong><small>等待配置与核验</small></div></div>
+            <span class="journey-line" aria-hidden="true"></span>
+            <div class="journey-step" id="step-trial"><span class="step-number">03</span><div><strong>按一下，试试看</strong><small>核验后体验 Speak</small></div></div>
+          </section>
+
+          <div class="device-grid">
+            <section class="card settings-card" id="settings-card" aria-labelledby="settings-title">
+              <div class="card-heading"><div><p class="eyebrow">偏好跟着你</p><h2 id="settings-title">你的 Speak 设置</h2></div><button class="text-button" id="edit-settings" aria-expanded="false" aria-controls="settings-form">调整设置 <span>↗</span></button></div>
+              <div class="voice-partner"><img src="/typeless.png" alt="" width="42" height="42"><div><span>语音工具</span><strong>Typeless</strong></div><span class="subtle-tag">模拟适配</span></div>
+              <div class="settings-summary" id="settings-summary"><div><span>使用方式</span><strong id="mode-summary">等待设备返回</strong></div><div><span>快捷键</span><strong id="shortcut-summary">—</strong></div><div><span>使用场景</span><strong id="target-summary">—</strong></div></div>
+              <form id="settings-form" hidden>
+                <fieldset><legend>Speak 使用方式</legend><div class="mode-options"><label><input type="radio" name="speak_mode" value="toggle" checked><span><strong>按两次</strong><small>一下开始，一下结束</small></span></label><label><input type="radio" name="speak_mode" value="hold"><span><strong>按住说</strong><small>按住开始，松开结束</small></span></label></div></fieldset>
+                <div class="form-columns"><label class="field" for="shortcut-select">快捷键<select id="shortcut-select" name="shortcut" aria-label="快捷键"><option value="RightOption">右 Option</option><option value="LeftOption">左 Option</option><option value="Fn">Fn</option></select></label><label class="field" for="target-select">使用场景<select id="target-select" name="target_app" aria-label="使用场景"><option value="codex">Codex</option><option value="workbuddy">WorkBuddy</option><option value="general">通用输入</option></select></label></div>
+                <p class="field-note">这里保存的是模拟设备设置，不会修改 Typeless 或其他真实应用。</p>
+                <div class="form-actions"><button class="button forest" type="submit">保存并核验</button><button class="text-button" type="button" id="cancel-edit">取消</button></div>
+              </form>
+              <div class="verification-note" id="verification-note"><span class="status-dot"></span><span>设置尚未核验</span></div>
+              <div class="setup-action"><div><strong>先体验一次自动设置</strong><p>按当前偏好完成读取、保存和核验。</p></div><button class="button small secondary" id="setup-button" data-mutation>自动设置演练 <svg><use href="#i-arrow"/></svg></button></div>
+            </section>
+
+            <section class="card trial-card" aria-labelledby="trial-title"><div class="card-heading"><div><p class="eyebrow">最后一步，亲手试试</p><h2 id="trial-title">按下 Speak</h2></div><span class="trial-badge" id="trial-badge">等待设置</span></div>
+              <div class="speak-stage" id="speak-stage"><div class="speak-orbit"></div><button id="speak-button" class="speak-button" aria-label="点击完成 Speak 模拟试用" disabled><svg><use href="#i-mic"/></svg><span>Speak</span></button><span class="speak-ring" aria-hidden="true"></span></div>
+              <p class="trial-instruction" id="trial-instruction">设置核验完成后，就可以试按。</p><div class="trial-feedback" id="trial-feedback"><span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span id="trial-feedback-text">等待模拟输入</span></div>
+              <p class="simulation-note">仅演练按键与反馈，不采集麦克风声音。</p>
+            </section>
+          </div>
+
+          <section class="activity-strip" aria-label="最近操作"><div class="activity-icon"><svg><use href="#i-history"/></svg></div><div><span class="eyebrow">最近一次操作</span><p id="latest-activity">还没有操作。可以自己设置，也可以让 AI 来完成。</p></div><button class="text-button" data-view="history">查看记录 <span>↗</span></button></section>
+          <section class="recovery-card" id="recovery-card" hidden><svg><use href="#i-info"/></svg><div><strong id="recovery-title">需要你配合一步</strong><p id="recovery-message"></p></div><button class="button secondary" id="recovery-button" data-mutation>继续</button></section>
+        </section>
+
+        <section class="view" id="view-ai" hidden aria-label="连接 AI">
+          <div class="page-intro"><p class="eyebrow">带进你习惯的工作方式</p><h2>让 AI 帮你准备好。</h2><p>连接后，说出需求。设置过程和结果，会同步回到这里。</p></div>
+          <div class="provider-grid">
+            <article class="provider-card active"><div class="provider-top"><img src="/icon.svg" alt="" width="40" height="40"><span class="provider-tag" id="codex-status">等待本地调用</span></div><h3>当前 AI 助手</h3><p>在当前对话里配置 MicNow，<br>随时查看同一台模拟设备。</p><button class="button forest" id="show-codex">查看连接步骤 <svg><use href="#i-arrow"/></svg></button></article>
+            <article class="provider-card"><div class="provider-top"><img src="/workbuddy.jpg" alt="" width="40" height="40"><span class="subtle-tag">待客户端验证</span></div><h3>WorkBuddy</h3><p>沿用同一套设备能力，<br>后续接入你日常的工作助手。</p><button class="button secondary" data-provider="WorkBuddy">查看适配说明</button></article>
+            <article class="provider-card"><div class="provider-top"><img src="/claude.svg" alt="" width="40" height="40"><span class="subtle-tag">按客户端安装</span></div><h3>更多 AI 平台</h3><p>设备能力保持一致，<br>各平台分别完成安装和授权。</p><button class="button secondary" data-provider="更多 AI 平台">了解接入方式</button></article>
+          </div>
+          <section class="card connect-guide" id="connect-guide" aria-labelledby="connect-title"><div class="card-heading"><div><p class="eyebrow">在当前本地 AI 助手中继续</p><h2 id="connect-title">连接一次，开始配合。</h2></div><span class="subtle-tag">仅本机</span></div><ol class="connect-steps"><li><span>1</span><div><strong>保留这个页面</strong><p>它会展示 AI 的执行进度和设备返回的结果。</p></div></li><li><span>2</span><div><strong>复制指令，发给当前助手</strong><p>AI 将连接当前会话，读取偏好并完成配置。</p></div></li><li><span>3</span><div><strong>回到这里，试按 Speak</strong><p>设置确认后，只需完成最后一次模拟试用。</p></div></li></ol><div class="prompt-card"><p id="agent-prompt">正在准备当前会话的连接指令…</p><button class="button lime" id="copy-prompt" disabled><svg><use href="#i-copy"/></svg>复制给 AI 的指令</button></div><div class="agent-evidence" id="agent-evidence"><span class="status-dot"></span><span>等待 AI 第一次调用。本页不会代替 AI 生成回复。</span></div></section>
+          <div class="inline-note" id="provider-note" role="status" hidden></div>
+        </section>
+
+        <section class="view" id="view-history" hidden aria-label="设置记录"><div class="page-intro"><p class="eyebrow">每一步，都有回应</p><h2>设置记录</h2><p>Web 和 AI 的操作会汇到这里。成功以设备回执和核验结果为准。</p></div><div class="history-toolbar"><div class="filter-group" role="group" aria-label="记录来源"><button data-filter="all" aria-pressed="true">全部</button><button data-filter="agent" aria-pressed="false">AI 操作</button><button data-filter="web" aria-pressed="false">Web 操作</button></div><span id="record-count">0 条操作</span></div><div class="history-list" id="history-list"><div class="empty-state"><svg><use href="#i-history"/></svg><h3>第一条记录，从你开始。</h3><p>完成一次设置，设备的回应就会出现在这里。</p><button class="button secondary" data-view="device">返回设备</button></div></div></section>
+
+        <details class="lab-drawer" id="lab-drawer"><summary><span>模拟与联调</span><span class="drawer-hint">体验异常情况 · 查看回执 · 协议草案</span><span class="chevron">⌄</span></summary><div class="lab-content"><div class="lab-heading"><div><h3>在真机到来之前，先把流程走通。</h3><p>以下操作只影响当前模拟设备。恢复正常后仍需重新核验。</p></div><button class="text-button" id="reset-button" data-mutation>新建模拟会话</button></div><div class="scenario-controls" role="group" aria-label="模拟设备场景"><button data-scenario="ready">正常连接</button><button data-scenario="disconnected">设备断开</button><button data-scenario="receiver-only">只有接收器</button><button data-scenario="permission-required">等待授权</button><button data-scenario="write-timeout">保存回执超时</button><button data-scenario="readback-mismatch">回读不一致</button><button data-scenario="audio-silent">没有声音</button><button data-scenario="unsupported-app">应用未适配</button></div><div class="technical-summary"><div><span>当前通信方式</span><strong id="transport-label">等待连接</strong></div><div><span>配置版本</span><strong id="revision-label">—</strong></div><div><span>会话</span><strong id="session-label">—</strong></div></div><p class="lab-boundary">这里验证的是软件指令与模拟设备回执；真实 USB、音频、按键和灯光仍需样机验收。</p><div class="doc-links"><a href="/docs/protocol.md" target="_blank" rel="noopener">最小协议草案 ↗</a><a href="/docs/hardware-questions.md" target="_blank" rel="noopener">真实硬件能力边界 ↗</a></div><details class="raw-detail"><summary>查看最近一次请求与回执</summary><pre id="raw-response">尚无指令。</pre></details></div></details>
+        <footer class="page-footer"><span>MicNow · 即麦</span><span>本地模拟 · 不录音 · 不修改真实应用</span></footer>
+      </main>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <div class="sr-only" id="live-status" role="status" aria-live="polite"></div>
+</body>
+</html>

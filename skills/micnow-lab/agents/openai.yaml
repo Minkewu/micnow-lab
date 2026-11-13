@@ -1,0 +1,4 @@
+interface:
+  display_name: "MicNow 设备实验室"
+  short_description: "AI 与 Web 操作同一台模拟设备，查看命令回执、配置核验与 Speak 状态"
+  default_prompt: "用 $micnow-lab 打开本地 MicNow 设备实验室。我没有硬件，请实际发送设备指令、核验配置，并让我在页面看到同一台模拟设备的状态。"

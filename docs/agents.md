@@ -1,0 +1,205 @@
+# 在不同 Agent 中安装 MicNow Lab
+
+文档核对日期：2026-11-13。版本：0.5.0。
+
+仓库地址：<https://github.com/Minkewu/micnow-lab>。
+
+MicNow Lab 是不需要硬件的本地模拟设备实验室。一个标准 `SKILL.md` 配合随包的 Python 脚本和网页资源，可以由不同本地 Agent 使用；它不会录音、控制真实麦克风或向外部应用输入文字。
+
+本仓库仅授权查看、下载、安装和运行，**未采用开放源码许可证**；其他权利与素材说明见 [使用范围](../USAGE.md) 和 [素材来源](../ASSET-SOURCES.md)。平台名称仅用于说明安装位置，不代表平台背书或市场审核通过。
+
+## 安装前
+
+需要 Python 3.9 或以上、本机命令执行能力、可保持运行的后台进程，以及能与该进程访问同一 `127.0.0.1` 的浏览器。安装 Skill 不会自动安装 Python，也不会授予执行权限。脚本调用结果会进入当前 AI 对话。
+
+以下安装命令在仓库根目录执行。可以下载 GitHub 仓库 ZIP 并解压，或使用：
+
+```sh
+git clone https://github.com/Minkewu/micnow-lab.git
+cd micnow-lab
+python3 --version
+```
+
+Windows 若使用 Python Launcher，将下文 `python3` 换成 `py -3`。命令中的项目路径要换成已存在的实际目录。
+
+`install.py` 默认只显示安装预览；加 `--install` 才复制文件。更新已有的不同版本时，先检查预览，再加 `--install --update`，安装器会备份旧版本。不要同时使用目录安装和同平台扩展安装，以免出现两个同名技能。
+
+当前 macOS 本地通信链路已有验证；**格式符合文档、文件复制成功、ZIP 导入成功，都不等于每个客户端完成端到端实测**。Windows 和未实际运行的客户端仍需完成文末的验收。远程 SSH、容器、云电脑与网页聊天中的 localhost 也不自动指向用户电脑。
+
+## 1. Codex
+
+面向本机 Codex 桌面／CLI 会话。用户级安装：
+
+```sh
+python3 install.py --agent codex
+python3 install.py --agent codex --install
+```
+
+安装位置为 `~/.agents/skills/micnow-lab/`。仅供某个项目使用时：
+
+```sh
+python3 install.py --agent codex --project "/path/to/project" --install
+```
+
+项目位置为 `.agents/skills/micnow-lab/`。新会话中请求“使用 micnow-lab 打开本地实验室”。目录被发现后，仍须按 Codex 的权限流程允许本机服务与通信；这不是 OpenAI 公共插件目录上架。
+
+官方来源：[Codex 本地技能目录与安装](https://learn.chatgpt.com/docs/build-skills#where-codex-loads-local-skills)。
+
+## 2. Claude Code
+
+这里的目标是本机 **Claude Code**，不是普通 Claude 网页聊天。
+
+```sh
+python3 install.py --agent claude-code
+python3 install.py --agent claude-code --install
+```
+
+安装到 `~/.claude/skills/micnow-lab/`；添加 `--project "/path/to/project"` 可安装到项目 `.claude/skills/`。使用 `/micnow-lab` 或直接描述任务。
+
+标准技能格式可直接复用。Claude Code 的执行隔离可能影响本地通信：macOS 上本地监听可能受限；Linux／WSL2 沙箱中的 localhost 可能属于单条命令的私有网络。受限时按客户端的正常授权流程处理，不自动关闭安全设置或改为公网监听。客户端端到端运行仍需实测。
+
+官方来源：[技能目录](https://code.claude.com/docs/en/skills#choose-where-skills-load)、[本地服务访问限制](https://code.claude.com/docs/en/sandboxing#a-command-fails-to-reach-a-server-on-localhost)。
+
+## 3. WorkBuddy
+
+推荐从 [下载目录](https://github.com/Minkewu/micnow-lab/tree/main/downloads) 下载 `micnow-lab-0.5.0.zip`，在 WorkBuddy 打开“专家·技能·连接器 → 技能 → 添加技能 → 上传技能”，选择 ZIP。
+
+也可安装到一个已存在的项目：
+
+```sh
+python3 install.py --agent workbuddy --project "/path/to/project"
+python3 install.py --agent workbuddy --project "/path/to/project" --install
+```
+
+位置为项目 `.codebuddy/skills/micnow-lab/`。安装器不猜测 WorkBuddy 用户级目录。官方文档中的对话安装适用于技能市场，不应把粘贴任意 GitHub URL 描述为已确认入口。
+
+WorkBuddy 支持脚本执行，仍可能要求工作区信任或命令授权；Python、后台服务持续性和浏览器通信需要实际检查。这里是自行导入，不代表 WorkBuddy 市场审核通过。
+
+官方来源：[技能上传](https://www.codebuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Skills-Market)、[项目目录](https://www.codebuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Project)、[执行权限](https://www.codebuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Permission-Modes)。
+
+## 4. Cursor
+
+```sh
+python3 install.py --agent cursor
+python3 install.py --agent cursor --install
+```
+
+使用 `~/.agents/skills/micnow-lab/`；加 `--project "/path/to/project"` 改为项目 `.agents/skills/`。Cursor 也支持 `.cursor/skills/`。在本机 Agent 中通过 `/` 查找技能或直接提出任务。
+
+官方确认支持随技能执行 Python 等脚本，但实际命令权限由客户端决定。此安装路径不自动同步到 Cloud Agents；云端运行也不等于本机运行。目录兼容已核对，客户端端到端运行待实测。
+
+官方来源：[Cursor Agent Skills](https://cursor.com/docs/skills)。
+
+## 5. Gemini CLI
+
+可使用仓库安装器：
+
+```sh
+python3 install.py --agent gemini
+python3 install.py --agent gemini --install
+```
+
+使用 `~/.agents/skills/micnow-lab/`。Gemini CLI 也接受 `.gemini/skills/`，并提供直接从 GitHub 安装的入口，可选其一：
+
+```sh
+gemini skills install https://github.com/Minkewu/micnow-lab.git --path skills/micnow-lab
+```
+
+通过 `/skills list` 检查发现情况；新安装后可 `/skills reload`。项目技能需要受信任工作区。技能激活及命令执行遵守 Gemini CLI 的确认流程，容器或隔离网络可能影响本机端口。格式／安装入口已核对，客户端运行待实测。
+
+官方来源：[技能安装](https://geminicli.com/docs/cli/skills/)、[发现与工作区信任](https://geminicli.com/docs/cli/tutorials/skills-getting-started/)、[执行环境](https://geminicli.com/docs/cli/sandbox/)。
+
+## 6. 豆包
+
+当前已核实的官方目标是**豆包工作**的技能体系。官方接入指南支持 `SKILL.md`、脚本、参考资料和资源，并提供开发者上传、审核及用户从技能页安装的流程。
+
+本仓库尚未核实豆包当前客户端的个人 ZIP 导入操作、固定本地技能目录、GitHub 直接安装或 Python 后台服务要求，因而**不提供猜测的自动安装命令**。可以下载通用 `micnow-lab-0.5.0.zip` 供适配核验；只有当前客户端确实提供自定义技能导入与本机执行入口时，才能继续测试。普通豆包网页聊天不能据此认定可以控制本机实验室。
+
+此状态为“待核实”，不是已验证兼容，也不是断言平台不支持。豆包开放平台审核上架和 `dbx` 应用插件开发是另外的流程，本次 GitHub 发布不执行这些流程。
+
+官方来源：[豆包技能接入指南](https://open.doubao.com/document/doubao-developer-guide/skill-integration-guide)。核对时官方搜索索引可读，页面正文抓取为空；个人安装路径尚无充分官方证据。
+
+## 7. 千问：Qwen Code
+
+这里适配 **Qwen Code** 的本机执行能力，不能等同于千问网页聊天。目录安装：
+
+```sh
+python3 install.py --agent qwen-code
+python3 install.py --agent qwen-code --install
+```
+
+使用 `~/.agents/skills/micnow-lab/`；Qwen Code 同时支持 `.qwen/skills/`。本仓库另提供 `qwen-extension.json`，可改用扩展安装：
+
+```sh
+qwen extensions install https://github.com/Minkewu/micnow-lab
+```
+
+若客户端的 GitHub 安装流程选择了不含扩展清单的 Release 附件，在已下载的完整仓库根目录改用 `qwen extensions install .`。通用技能 ZIP 不是扩展 ZIP；扩展安装需要根目录的 `qwen-extension.json`。
+
+扩展安装后的技能名称带前缀，可在 `/skills` 查看并使用 `/micnow-lab:micnow-lab`。Qwen Code 的 Shell 工具支持受管理后台进程；Agent 应保持实验室服务运行，并在结束时清理。容器或关闭的网络模式仍可能隔离 localhost。清单格式已核对，客户端运行待实测。
+
+官方来源：[技能目录](https://qwenlm.github.io/qwen-code-docs/en/users/features/skills/)、[扩展清单与安装](https://qwenlm.github.io/qwen-code-docs/en/users/extension/introduction/)、[后台执行](https://qwenlm.github.io/qwen-code-docs/en/developers/tools/shell/)。
+
+## 8. DeepSeek
+
+这里的可实现路线是 **DeepSeek 模型 + 已支持的本地 Agent 宿主**。例如，已经按 DeepSeek 官方指南配置好的 Claude Code，可安装同一份技能：
+
+```sh
+python3 install.py --agent claude-code
+python3 install.py --agent claude-code --install
+```
+
+随后在该 Claude Code 会话调用 `/micnow-lab`。目录与执行权限由 Claude Code 决定；安装器不切换模型、不设置 API 密钥，也不创建虚构的 DeepSeek 技能目录。已有其他宿主时，按该宿主的技能安装文档操作。
+
+DeepSeek 官方明确：模型返回工具调用，具体函数由调用方执行。因此不能把“DeepSeek 支持 Tool Calls”当作 DeepSeek 网页聊天已支持本机脚本。该组合尚需独立端到端实测。
+
+官方来源：[DeepSeek 接入 Claude Code](https://api-docs.deepseek.com/quick_start/agent_integrations/claude_code/)、[Tool Calls 执行责任](https://api-docs.deepseek.com/guides/tool_calls/)。
+
+## 9. Kimi：Kimi Code CLI
+
+目标是新版 **Kimi Code CLI**；普通 Kimi 网页聊天的技能入口是另一套运行环境。
+
+```sh
+python3 install.py --agent kimi-cli
+python3 install.py --agent kimi-cli --install
+```
+
+使用 `~/.agents/skills/micnow-lab/`。新版也支持 `.kimi-code/skills/` 与用户的 `$KIMI_CODE_HOME/skills/`（默认 `~/.kimi-code/skills/`）；旧版 `.kimi/skills/` 不作为当前唯一入口。
+
+本仓库有 `kimi.plugin.json`，也可在 Kimi 会话中使用插件方式安装：
+
+```text
+/plugins install https://github.com/Minkewu/micnow-lab
+/reload
+/skill:micnow-lab:micnow-lab
+```
+
+可用 `/plugins list` 检查插件；若界面显示不同插件 ID，以实际列出的限定技能名为准。Kimi 的 Bash 支持后台执行，但默认后台任务超时为 10 分钟，应按工具选项管理实验室生命周期。CLI 自身不保证 Python 已安装。格式／清单已核对，客户端运行待实测。
+
+官方来源：[技能目录](https://www.kimi.com/code/docs/en/kimi-code-cli/customization/skills.html)、[插件安装](https://www.kimi.com/code/docs/en/kimi-code-cli/customization/plugins.html)、[工具与后台任务](https://www.kimi.com/code/docs/en/kimi-code-cli/reference/tools.html)、[版本迁移](https://www.kimi.com/code/docs/en/kimi-code-cli/guides/migration.html)。
+
+## 10. Perplexity
+
+目标是 **Perplexity Computer / Personal Computer**，不是普通搜索聊天。请下载 [下载目录](https://github.com/Minkewu/micnow-lab/tree/main/downloads) 中的 `micnow-lab-perplexity-0.5.0.zip`。
+
+1. 打开 Plugins → Add custom → Upload plugin or skill。
+2. 选择 `micnow-lab-perplexity-0.5.0.zip`。尚未显示 Plugins 的界面使用 Customize → Skills → Create skill → Upload skill。
+3. 确认名称与说明，并检查当前任务是否有可用的本机执行环境。
+
+这个专用 ZIP 将 `SKILL.md` 放在 ZIP 根，保留 `scripts/`、`references/` 和 `assets/`；不要用仅有文字的 `.md` 替代完整包。官方单技能限额为 20 MB、100 文件。本仓库当前不提供 Perplexity 的 GitHub 插件导入入口，因为这需要另外的插件清单。
+
+网页 Computer 运行在云端；Personal Computer 才涉及本机文件与应用。本机服务、持续进程和 localhost 仍需实测；仅上传成功不能保证实验室能在用户浏览器打开。不猜测 Perplexity 的内部技能目录。
+
+官方来源：[技能 ZIP 格式与导入](https://www.perplexity.ai/help-center/en/articles/13914413-how-to-use-computer-skills)、[本机与云端区别](https://www.perplexity.ai/help-center/en/articles/14659663-what-is-personal-computer)。
+
+## 每个客户端的验收方法
+
+请在目标客户端实际完成以下流程，再把对应环境标为“已验证”：
+
+1. 客户端能发现并读取 `micnow-lab`，可访问随包脚本与网页资源。
+2. Agent 用可用的 Python 3.9+ 启动服务，读取真实输出的 URL；浏览器能打开同一服务。
+3. CLI 读取状态成功；Web 中修改一项设置后，Agent 能回读该值，证明两端使用同一会话。
+4. 用户明确要求时，执行一项模拟设置并回读核验；模拟 Speak 后确认状态已结束。
+5. 结束体验时关闭服务，确认服务及其子进程退出；不把凭证内容粘贴进聊天。
+
+记录客户端版本、系统版本、Python 版本、安装方式和失败位置。只有技能被识别时，应写“安装已验证”；完成以上步骤才写“本机运行已验证”。异常时保留错误事实，不通过新会话、改公网监听或放宽安全设置掩盖失败。
