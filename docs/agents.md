@@ -10,7 +10,7 @@ MicNow Lab 是不需要硬件的本地模拟设备实验室。一个标准 `SKIL
 
 ## 安装前
 
-需要 Python 3.9 或以上、本机命令执行能力、可保持运行的后台进程，以及能与该进程访问同一 `127.0.0.1` 的浏览器。安装 Skill 不会自动安装 Python，也不会授予执行权限。脚本调用结果会进入当前 AI 对话。
+需要 Python 3.9 或以上、本机命令执行能力、可保持运行的后台进程，以及能与该进程访问同一 `127.0.0.1` 的浏览器。Agent 自身必须已登录或配置可用模型；这与 Skill 安装是两个步骤。安装 Skill 不会自动安装 Python，也不会授予执行权限。脚本调用结果会进入当前 AI 对话。
 
 以下安装命令在仓库根目录执行。可以下载 GitHub 仓库 ZIP 并解压，或使用：
 
@@ -24,7 +24,7 @@ Windows 若使用 Python Launcher，将下文 `python3` 换成 `py -3`。命令�
 
 `install.py` 默认只显示安装预览；加 `--install` 才复制文件。更新已有的不同版本时，先检查预览，再加 `--install --update`，安装器会备份旧版本。不要同时使用目录安装和同平台扩展安装，以免出现两个同名技能。
 
-当前 macOS 本地通信链路已有验证；**格式符合文档、文件复制成功、ZIP 导入成功，都不等于每个客户端完成端到端实测**。Windows 和未实际运行的客户端仍需完成文末的验收。远程 SSH、容器、云电脑与网页聊天中的 localhost 也不自动指向用户电脑。
+当前 macOS 本地通信链路已有验证；**格式符合文档、文件复制成功、ZIP 导入成功，都不等于每个客户端完成端到端实测**。具体版本、已观察行为和阻塞点见 [客户端实测记录](client-validation.md)。Windows 和未实际运行的客户端仍需完成文末的验收。远程 SSH、容器、云电脑与网页聊天中的 localhost 也不自动指向用户电脑。
 
 ## 1. Codex
 
@@ -105,19 +105,24 @@ python3 install.py --agent gemini --install
 gemini skills install https://github.com/Minkewu/micnow-lab.git --path skills/micnow-lab
 ```
 
-通过 `/skills list` 检查发现情况；新安装后可 `/skills reload`。项目技能需要受信任工作区。技能激活及命令执行遵守 Gemini CLI 的确认流程，容器或隔离网络可能影响本机端口。格式／安装入口已核对，客户端运行待实测。
+先在目标项目交互启动 Gemini，审阅项目内容并按界面选择信任该项目；0.68.0 的信任管理入口为 `/permissions trust`。通过 `/skills list` 检查发现情况；新安装后可 `/skills reload`。未受信任的项目会跳过项目技能。不要把全局跳过信任检查作为安装步骤。技能激活及命令执行遵守 Gemini CLI 的确认流程，容器或隔离网络可能影响本机端口。本轮只观察到临时信任条件下的技能发现，正常信任流程及模型运行待实测。
 
 官方来源：[技能安装](https://geminicli.com/docs/cli/skills/)、[发现与工作区信任](https://geminicli.com/docs/cli/tutorials/skills-getting-started/)、[执行环境](https://geminicli.com/docs/cli/sandbox/)。
 
 ## 6. 豆包
 
-当前已核实的官方目标是**豆包工作**的技能体系。官方接入指南支持 `SKILL.md`、脚本、参考资料和资源，并提供开发者上传、审核及用户从技能页安装的流程。
+目标是**豆包工作客户端**。2026-11-11 更新的官方帮助明确支持个人自定义技能上传：
 
-本仓库尚未核实豆包当前客户端的个人 ZIP 导入操作、固定本地技能目录、GitHub 直接安装或 Python 后台服务要求，因而**不提供猜测的自动安装命令**。可以下载通用 `micnow-lab-0.5.0.zip` 供适配核验；只有当前客户端确实提供自定义技能导入与本机执行入口时，才能继续测试。普通豆包网页聊天不能据此认定可以控制本机实验室。
+1. 下载并解压标准技能 ZIP，保留整个 `micnow-lab/` 文件夹。
+2. 在客户端进入“插件·技能·伙伴 → 技能 → + 添加 → 上传技能”。
+3. 选择包含 `SKILL.md` 的完整文件夹，保留脚本、参考资料和图片；不要只上传说明文件。
+4. 在新工作任务中输入 `/` 或 `@`，查找并选中技能，完成文末的运行验收。
 
-此状态为“待核实”，不是已验证兼容，也不是断言平台不支持。豆包开放平台审核上架和 `dbx` 应用插件开发是另外的流程，本次 GitHub 发布不执行这些流程。
+官方个人上传说明支持文件或文件夹；本轮尚未实际完成客户端导入，故不承诺个人入口支持哪一种 ZIP 层级，也不猜测固定技能目录或 GitHub 直接安装命令。Python、本机后台服务和浏览器访问能力仍需实测。普通豆包网页聊天不能据此认定可以控制本机实验室。
 
-官方来源：[豆包技能接入指南](https://open.doubao.com/document/doubao-developer-guide/skill-integration-guide)。核对时官方搜索索引可读，页面正文抓取为空；个人安装路径尚无充分官方证据。
+开放平台的企业专属或公开上架属于另外的审核流程，本次 GitHub 安装不需要代替用户提交该流程。该开放平台要求根目录 `SKILL.md` 的 ZIP，与本节的个人文件夹上传应分开处理。
+
+官方来源：[豆包工作使用技能](https://www.doubao.com/work/docs/zh-cn/articles/081010973544-skills)、[开发者技能接入指南](https://open.doubao.com/document/doubao-developer-guide/skill-integration-guide)。本轮已在浏览器读到两篇正文。
 
 ## 7. 千问：Qwen Code
 
@@ -136,7 +141,7 @@ qwen extensions install https://github.com/Minkewu/micnow-lab
 
 若客户端的 GitHub 安装流程选择了不含扩展清单的 Release 附件，在已下载的完整仓库根目录改用 `qwen extensions install .`。通用技能 ZIP 不是扩展 ZIP；扩展安装需要根目录的 `qwen-extension.json`。
 
-扩展安装后的技能名称带前缀，可在 `/skills` 查看并使用 `/micnow-lab:micnow-lab`。Qwen Code 的 Shell 工具支持受管理后台进程；Agent 应保持实验室服务运行，并在结束时清理。容器或关闭的网络模式仍可能隔离 localhost。清单格式已核对，客户端运行待实测。
+扩展安装后的技能名称带前缀，可在 `/skills` 查看并使用 `/micnow-lab:micnow-lab`。Qwen Code 的 Shell 工具支持受管理后台进程；Agent 应保持实验室服务运行，并在结束时清理。容器或关闭的网络模式仍可能隔离 localhost。本轮项目发现及本地路径扩展安装已实测；GitHub／ZIP 原生安装入口和模型运行尚未实测。
 
 官方来源：[技能目录](https://qwenlm.github.io/qwen-code-docs/en/users/features/skills/)、[扩展清单与安装](https://qwenlm.github.io/qwen-code-docs/en/users/extension/introduction/)、[后台执行](https://qwenlm.github.io/qwen-code-docs/en/developers/tools/shell/)。
 
@@ -174,7 +179,7 @@ python3 install.py --agent kimi-cli --install
 /skill:micnow-lab:micnow-lab
 ```
 
-可用 `/plugins list` 检查插件；若界面显示不同插件 ID，以实际列出的限定技能名为准。Kimi 的 Bash 支持后台执行，但默认后台任务超时为 10 分钟，应按工具选项管理实验室生命周期。CLI 自身不保证 Python 已安装。格式／清单已核对，客户端运行待实测。
+可用 `/plugins list` 检查插件；若界面显示不同插件 ID，以实际列出的限定技能名为准。Kimi 的 Bash 支持后台执行，但默认后台任务超时为 10 分钟，应按工具选项管理实验室生命周期。CLI 自身不保证 Python 已安装。本轮项目发现及本地路径插件安装已实测；GitHub／ZIP 原生安装入口和模型运行尚未实测。
 
 官方来源：[技能目录](https://www.kimi.com/code/docs/en/kimi-code-cli/customization/skills.html)、[插件安装](https://www.kimi.com/code/docs/en/kimi-code-cli/customization/plugins.html)、[工具与后台任务](https://www.kimi.com/code/docs/en/kimi-code-cli/reference/tools.html)、[版本迁移](https://www.kimi.com/code/docs/en/kimi-code-cli/guides/migration.html)。
 
