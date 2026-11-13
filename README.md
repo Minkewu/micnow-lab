@@ -4,55 +4,133 @@
 
 当前版本 **0.5.1**。这是本地设备实验室，**不会录音、控制真实硬件、发送系统按键或修改外部应用**。页面里的 Speak 文字是预置演练样例。
 
-0.5.1 补充了诊断时只检查本次已知进程、端口和路径的规则，没有改变模拟行为或 0.4 协议。各客户端的 0.5.0 与 0.5.1 实测范围分别记录；安装、功能操作和退出清理不会合并推断。
+## 选择你的 Agent，三步开始
 
-## 开始安装
+以下五个入口已有真实模型运行记录，具体版本和覆盖范围写在各节末尾。**目前实测环境为 macOS；Windows、Linux 尚未完成客户端运行实测。**
 
-需要 Python 3.9+、现代浏览器，以及已登录、允许执行本机命令的 Agent。Skill 本身不需要新增模型密钥，但所用 Agent 仍需要自己的可用账户或模型配置。服务、后续命令和浏览器必须能访问同一个本机 `127.0.0.1`。纯网页聊天读取文件，不等于可以运行本机服务。
+| 你正在使用 | 下载什么 | 安装步骤 |
+| --- | --- | --- |
+| Codex CLI | 完整项目 ZIP | [前往 Codex](#codex) |
+| WorkBuddy | 标准技能 ZIP，保持压缩包 | [前往 WorkBuddy](#workbuddy) |
+| 豆包工作 | 标准技能 ZIP，解压后上传文件夹 | [前往豆包工作](#doubao) |
+| 千问本地工作助理 | 标准技能 ZIP，保持压缩包 | [前往千问](#qwen) |
+| DeepSeek Harness | 完整项目 ZIP | [前往 DeepSeek Harness](#deepseek) |
 
-下载本仓库（页面上方 **Code → Download ZIP**）并解压，或者：
+**安装前准备：**电脑需要 Python 3.9 或以上、浏览器，以及已安装并登录、可以执行本机命令的对应 Agent。没有 Python 时可从 [Python 官网](https://www.python.org/downloads/) 安装。MicNow Lab 不需要另外配置模型 API 密钥；Agent 自身仍需可用账号或模型配置。首次使用时按客户端提示允许本次本机运行。
 
-```sh
-git clone https://github.com/Minkewu/micnow-lab.git
-cd micnow-lab
-```
+本指南使用各平台的**本机工作／编程入口**。普通网页聊天、手机聊天、远程或云端 Agent 不自动具备运行这个本机实验室的能力。其他 Agent 的进度见 [兼容状态](#compatibility)。
 
-在解压后的仓库目录运行安装预览，再确认安装。以下以 Codex 为例：
+<a id="codex"></a>
 
-```sh
-python3 install.py --agent codex
-python3 install.py --agent codex --install
-```
+### Codex CLI
 
-`--agent` 可选 `codex`、`claude-code`、`cursor`、`gemini`、`qwen-code`、`kimi-cli`、`deepseek-harness`。默认安装到当前用户的技能目录；只想放进一个项目时，加 `--project "/你的项目路径"`。
+1. **下载：**点击 [下载完整项目 ZIP](https://github.com/Minkewu/micnow-lab/archive/refs/heads/main.zip) 并解压，也可点击本页上方 **Code → Download ZIP**。打开解压后的 `micnow-lab-main` 文件夹，里面应有 `install.py`。
+2. **安装：**打开终端，输入 `cd` 和一个空格，把上述文件夹拖入终端，按回车；再复制执行：
 
-WorkBuddy 当前使用已核实的项目目录：
+   ```sh
+   python3 install.py --agent codex --install
+   ```
 
-```sh
-python3 install.py --agent workbuddy --project "/你的项目路径" --install
-```
+3. **开始用：**在本机 Codex CLI 新开会话，发送：
 
-豆包工作可将标准技能 ZIP 解压，在“插件·技能·伙伴 → 技能 → + 添加 → 上传技能”中选择完整 `micnow-lab/` 文件夹，导入后开启技能。macOS 豆包工作 `2.35.12` 已完成模型操作与真实浏览器双向设置的完整验收，详见 [客户端实测记录](docs/client-validation.md)。
+   > 使用 $micnow-lab 打开本地 MicNow 实验室，读取当前设置，并打开同一会话的网页。
 
-Windows 请先确认 Python 3.9+ 已安装，并将示例中的 `python3` 换为可用的 `py -3` 或 `python`。Windows 客户端端到端运行尚未实测。
+安装后找不到技能时，重启 Codex 再开会话。这里下载的是**完整项目 ZIP**；下方用于应用内上传的标准技能 ZIP 不含 `install.py`。
 
-安装器只复制 `micnow-lab`，不修改其他技能或 Agent 配置。默认只预览；已有不同版本时必须显式加 `--update`，旧版会备份在技能目录旁的 `.micnow-lab-backups/`。更新后重新打开会话或刷新客户端的技能列表。
+实测范围：Codex CLI 使用 **0.5.0** 完成技能读取、模型修改与回读、模拟 Speak 和退出清理；浏览器连接通过 HTTP 检查，本轮未操作可视网页。当前下载版本为 0.5.1，未将旧版结果记为新版完整重测。
 
-## 在 Agent 里使用
+<a id="workbuddy"></a>
 
-Codex 可以输入 `$micnow-lab`；Claude Code 可以使用 `/micnow-lab`。其他本地 Agent 在确认技能已经发现后，直接说：
+### WorkBuddy
 
-> 用 micnow-lab 打开本地 MicNow 设备实验室。先读取当前设置，把 Speak 改为按两次开始和结束；保留其他设置，完成后回读核验，并打开同一会话的网页。
+1. **下载：**点击 [下载标准技能 ZIP · 0.5.1](https://github.com/Minkewu/micnow-lab/raw/refs/heads/main/downloads/micnow-lab-0.5.1.zip)，保留 `.zip` 文件，**不用解压**。
+2. **安装：**在 WorkBuddy 打开 **专家·技能·连接器 → 技能 → 添加技能 → 上传技能**，选择下载的 `micnow-lab-0.5.1.zip`。导入完成后确认 `micnow-lab` 已启用。
+3. **开始用：**新建工作任务，选用 `micnow-lab`，发送：
 
-AI 应实际启动服务、执行命令和回读结果。网页上修改设置后，AI 会读取到同一个模拟设备的新状态。“连接 AI”页可复制当前会话的操作提示；不要把连接文件的内容或令牌发到公开聊天、Issues 或仓库。
+   > 使用 micnow-lab 打开本地 MicNow 实验室，读取当前设置，并打开同一会话的网页。
 
-结束时说“关闭这次 MicNow 实验室”，让 AI 执行 `shutdown`。只关闭浏览器标签页不会停止后台进程。
+实测范围：WorkBuddy **5.9.3** 已用 0.5.0 完成完整功能流程；0.5.1 已通过原生 ZIP 安装、启动、读取设置、显示网页和模型关闭清理，新版配置修改与 Speak 尚未重测。
 
-## 十个目标入口
+<a id="doubao"></a>
+
+### 豆包工作
+
+1. **下载：**点击 [下载标准技能 ZIP · 0.5.1](https://github.com/Minkewu/micnow-lab/raw/refs/heads/main/downloads/micnow-lab-0.5.1.zip)，**解压**，得到 `micnow-lab` 文件夹。
+2. **安装：**在豆包工作打开 **插件·技能·伙伴 → 技能 → + 添加 → 上传技能**，选择完整的 **`micnow-lab` 文件夹**，导入后开启技能。文件夹中应包含 `SKILL.md`、`scripts`、`assets` 等内容，不能只上传 `SKILL.md`。
+3. **开始用：**新建工作任务，选用 `micnow-lab`，发送：
+
+   > 使用 micnow-lab 打开本地 MicNow 实验室，读取当前设置，并打开同一会话的网页。
+
+实测范围：豆包工作 **2.35.12** 已用 **0.5.0** 完成文件夹导入、模型操作、真实网页双向修改、模拟 Speak 和退出清理；0.5.1 尚未完成同样的完整重测。这里适用于豆包工作客户端。
+
+<a id="qwen"></a>
+
+### 千问本地工作助理
+
+1. **下载：**点击 [下载标准技能 ZIP · 0.5.1](https://github.com/Minkewu/micnow-lab/raw/refs/heads/main/downloads/micnow-lab-0.5.1.zip)，保留 `.zip` 文件，**不用解压**。
+2. **安装：**在千问本机应用打开 **本地工作助理 → 技能 → 新建 → 上传 ZIP**，选择 `micnow-lab-0.5.1.zip`，等待校验完成并开启技能。
+3. **开始用：**新建本地工作任务，选用 `micnow-lab`，发送：
+
+   > 使用 micnow-lab 打开本地 MicNow 实验室，读取当前设置，并打开同一会话的网页。
+
+实测范围：千问工作助理 **5.2.0.298** 已用 0.5.1 完成模型操作、真实网页双向设置和模拟 Speak；模型关闭及清理在另一次独立会话补测通过。两次结果分别记录。这里适用于国内千问本地工作助理；Qwen Code 的状态另列。
+
+<a id="deepseek"></a>
+
+### DeepSeek Harness
+
+先安装并登录 [DeepSeek 官方 Harness](https://www.deepseek.com/en/harness/)，准备一个可用的本地项目。以下对应官方 Harness 的本机 Web 界面；普通 DeepSeek 网页聊天不适用。
+
+1. **下载：**点击 [下载完整项目 ZIP](https://github.com/Minkewu/micnow-lab/archive/refs/heads/main.zip) 并解压。打开解压后的 `micnow-lab-main` 文件夹，里面应有 `install.py`。
+2. **安装：**打开终端，输入 `cd` 和一个空格，把上述文件夹拖入终端，按回车；再复制执行：
+
+   ```sh
+   python3 install.py --agent deepseek-harness --install
+   ```
+
+3. **开始用：**重新打开 Harness 的本地项目，新建任务，发送：
+
+   > 使用 micnow-lab 打开本地 MicNow 实验室，读取当前设置，并打开同一会话的网页。
+
+实测范围：官方 npm 客户端 **0.2.2-rc.1 的 Web profile** 已用 0.5.1 完成同一会话中的模型／真实网页双向设置、模拟 Speak、模型关闭和独立清理核验。该预览版的项目选择按钮曾无响应，测试使用官方接口完成项目注册；处理经过见 [客户端实测记录](docs/client-validation.md)。原生桌面版尚未实测。
+
+## 打开后怎么用、怎么结束
+
+看到实验室网页后，可以继续在**同一个 Agent 任务**中发送：
+
+> 把 Speak 改为按两次开始和结束，保留其他设置，完成后回读核验。
+
+也可以在网页修改设置，再让 AI 检查：
+
+> 读取当前设置，告诉我刚才在网页修改的设置是否已经生效。
+
+AI 应实际执行命令、读取结果，并与网页操作同一个模拟设备。页面中的 Speak 是模拟演练，不会录音或向其他应用输入文字。
+
+**用完后发送：**
+
+> 关闭这次 MicNow 实验室，并确认后台服务已经停止。
+
+只关闭浏览器标签页不会停止后台服务；需要让 Agent 完成关闭操作。
+
+## 安装或使用遇到问题
+
+- **找不到 `install.py`：**Codex 和 Harness 应下载完整项目 ZIP，并在含有该文件的目录执行安装命令。
+- **找不到技能：**确认安装／导入成功且技能已启用，再新开会话；必要时重启客户端。上传时保留完整资源，不要只上传说明文件。
+- **提示找不到 Python：**安装 Python 3.9+ 后重启终端和 Agent；可用 `python3 --version` 检查。Windows 可使用 `py -3` 或 `python`，但 Windows、Linux 的客户端运行仍待实测。
+- **提示已有不同版本：**命令安装在原命令末尾加 `--update`，例如 `python3 install.py --agent codex --install --update`。安装器会备份旧版；应用内上传请使用该客户端的更新／重新导入入口，避免重复安装同名技能。
+- **网页打不开：**让 Agent 确认实验室仍在运行，并使用这次启动返回的网址。Agent、服务和浏览器需能访问同一台电脑的 `127.0.0.1`；按客户端正常流程允许本机连接。
+
+项目级安装、其他安装方式与平台限制见 [Agent 安装与兼容说明](docs/agents.md)。
+
+<a id="compatibility"></a>
+
+## 全部 Agent 的兼容状态
+
+核对日期：**2026-11-13**。0.5.1 补充了限定诊断范围的指引，没有改变模拟行为或 0.4 协议。下表区分安装成功、功能操作与退出清理；未完成项保留待验证。
 
 | 名称 | 当前提供的接入方式 | 验证边界 |
 | --- | --- | --- |
-| Codex | 标准 Skill + 安装器 | 真实 CLI 已完成发现、模型调用、读写与清理；本轮未操作可视网页 |
+| Codex | 标准 Skill + 安装器 | 0.5.0 真实 CLI 已完成发现、模型调用、读写与清理；本轮未操作可视网页，0.5.1 未完整重测 |
 | Claude Code | 标准 Skill + 安装器 | 0.5.1 安装及 19 文件校验通过；技能发现和模型运行未验收，当前无可用账号 |
 | WorkBuddy | 项目安装器或技能 ZIP | `5.9.3` 完成 0.5.0 完整功能测试；0.5.1 原生 ZIP 安装、最小生命周期与本次限定范围诊断通过，配置修改和 Speak 未重测 |
 | Cursor | 标准 Skill + 安装器 | 0.5.1 安装及 19 文件校验通过；当前无可用测试账号，技能发现和模型运行未验收 |
@@ -65,11 +143,12 @@ AI 应实际启动服务、执行命令和回读结果。网页上修改设置�
 
 详细步骤、官方来源及每个平台的运行限制见 **[Agent 安装与兼容说明](docs/agents.md)**，本轮版本和证据范围见 **[客户端实测记录](docs/client-validation.md)**。格式适配不等于已经在十个客户端逐一验收，也不表示获得官方市场认证。
 
-## 下载独立技能包
+## 下载与文件校验
 
-- [标准技能 ZIP](https://github.com/Minkewu/micnow-lab/raw/refs/heads/main/downloads/micnow-lab-0.5.1.zip)：外层是 `micnow-lab/`，用于下载后手动安装及 WorkBuddy 上传。
+- [完整项目 ZIP](https://github.com/Minkewu/micnow-lab/archive/refs/heads/main.zip)：含 `install.py`，用于上文 Codex、DeepSeek Harness 的命令安装。
+- [标准技能 ZIP](https://github.com/Minkewu/micnow-lab/raw/refs/heads/main/downloads/micnow-lab-0.5.1.zip)：外层是 `micnow-lab/`，用于 WorkBuddy、千问上传，或解压后供豆包工作导入文件夹。
 - [Perplexity 技能 ZIP](https://github.com/Minkewu/micnow-lab/raw/refs/heads/main/downloads/micnow-lab-perplexity-0.5.1.zip)：`SKILL.md` 直接位于 ZIP 根目录。
-- [文件校验值](downloads/SHA256SUMS.txt)。两个包包含同一份 Skill 和程序，仅 ZIP 层级不同。
+- [技能包校验值](downloads/SHA256SUMS.txt)。标准技能包和 Perplexity 包包含同一份 Skill 和程序，仅 ZIP 层级不同；Perplexity 的模型运行仍待验证。
 
 ## 只体验网页
 
